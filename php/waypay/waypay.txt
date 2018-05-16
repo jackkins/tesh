@@ -1,0 +1,82 @@
+<?php // генерирование на пхп стороне 
+	$out['date_add'] = strtotime("now");
+
+	for($i=0;$i<count($out['products']);$i++){
+		$out['products_name'][] = $out['products'][$i]['name'];
+		$out['products_count'][] = $out['products'][$i]['quantity'];
+		$out['products_price'][] = $out['products'][$i]['price'];
+	}
+	$out['order_id'] = $order_id;
+
+	$secretKey = "91faf68e87e19994484a310d23a4ab29be70ed49";
+	$out['wayforpay']['merchantAccount'] = "amura_od_ua1";
+	$out['wayforpay']['http_host'] = $_SERVER['HTTP_HOST'];
+	$out['wayforpay']['orderReference'] = $out['order_id'];
+	$out['wayforpay']['orderDate'] = $out['date_add'];
+	$out['wayforpay']['amount'] = $out['total'];
+	$out['wayforpay']['currency'] = $out['currency'];
+
+	$merchantSignature[] = $out['wayforpay']['merchantAccount'];
+	$merchantSignature[] = $out['wayforpay']['http_host'];
+	$merchantSignature[] = $out['wayforpay']['orderReference'];
+	$merchantSignature[] = $out['wayforpay']['orderDate'];
+	$merchantSignature[] = $out['wayforpay']['amount'];
+	$merchantSignature[] = $out['wayforpay']['currency'];
+
+	for($i=0;$i<count($out['products_name']);$i++){
+		$out['wayforpay']['productName'][] = $out['products_name'][$i];
+		$merchantSignature[] = $out['products_name'][$i];
+	}
+	for($i=0;$i<count($out['products_count']);$i++){
+		$out['wayforpay']['productCount'][] = $out['products_count'][$i];
+		$merchantSignature[] = $out['products_count'][$i];
+	}
+	for($i=0;$i<count($out['products_price']);$i++){
+		$out['wayforpay']['productPrice'][] = $out['products_price'][$i];
+		$merchantSignature[] = $out['products_price'][$i];
+	}
+
+	$hash = implode(";", $merchantSignature);
+
+	$out['wayforpay']['merchantSignature'] = hash_hmac("md5",$hash,$secretKey);
+?>
+<script type="text/javascript">
+function pay(){
+    var payment = new Wayforpay();
+	payment.run({
+		merchantAccount : json['wayforpay']['merchantAccount'],
+		merchantDomainName : json['wayforpay']['http_host'],
+		authorizationType : "SimpleSignature",
+		merchantSignature : json['wayforpay']['merchantSignature'],
+		orderReference : json['wayforpay']['orderReference'],
+		orderDate : json['wayforpay']['orderDate'],
+		amount : json['wayforpay']['amount'],
+		currency : json['wayforpay']['currency'],
+		productName : json['wayforpay']['productName'],
+		productPrice : json['wayforpay']['productPrice'],
+		productCount : json['wayforpay']['productCount'],
+		straightWidget: true,
+		clientFirstName : name,
+		clientLastName : name,
+		clientEmail : "",
+		clientPhone: mobile,
+		language : "RU"
+	},
+	function (response) {
+
+	setTimeout(function(){
+			location = '<?php echo $success_link; ?>';
+		},2000);
+
+	},
+	function (response) {
+		// on declined
+
+	},
+	function (response) {
+		// on pending or in processing
+
+	},
+	);
+}
+</script>

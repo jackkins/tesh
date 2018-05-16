@@ -1,0 +1,8 @@
+$headers = "Reply-To: ". $admin_email . "\r\n";
+$headers .= "CC: ". $admin_email . "\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+$subject = mb_encode_mimeheader($subject, "UTF-8", "Q");
+
+	mail($admin_email, $subject, $message, $headers);

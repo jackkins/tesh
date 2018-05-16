@@ -1,0 +1,34 @@
+// js script
+
+var fdata = new FormData();
+if(files !== "undefined"){
+	$.each( files, function( key, value ){
+		fdata.append( key, value );
+	});
+}
+fdata.append('title',title);
+$.ajax({
+	url:"/promo_action.php",
+	data: fdata,
+	datatype:"html",
+	type:"post",
+	processData : false,
+	contentType : false, 
+	success:function(respond){
+		alert("Сохранено");
+	}
+})
+
+
+.on('change',"input[name='upload_promo_img']",function(){
+		files = this.files;
+		
+		// показать фотку сразу
+			var reader = new FileReader();
+
+			//херня реагирует на событие readAsDataURL
+	        reader.onload = function (e) {
+	            $('.bg_promo_img').css('background-image', 'url('+e.target.result+')');
+	        }
+	        reader.readAsDataURL(files[0]);
+	})

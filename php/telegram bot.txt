@@ -1,0 +1,2 @@
+https://api.telegram.org/bot436359316:AAHdMZwweF4W5ZFEgq-SKZjMwh3rIlFcfxY/sendMessage?chat_id=332089292&text=
+https://api.telegram.org/bot436359316:AAHdMZwweF4W5ZFEgq-SKZjMwh3rIlFcfxY/getUpdates
